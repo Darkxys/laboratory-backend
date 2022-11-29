@@ -13,7 +13,7 @@ def is_valid_signature(x_hub_signature, data, private_key):
     
 @app.route("/", methods=["GET"])
 def root():
-    return "Hello World!"
+    return "Hello World! Test pull"
 
 @app.route('/update_server', methods=['POST'])
 def webhook():
@@ -55,10 +55,10 @@ def webhook():
                 payload=payload))
             abort(abort_code)
 
-        if payload['ref'] != 'refs/heads/master':
+        if payload['ref'] != 'refs/heads/main':
             return json.dumps({'msg': 'Not master; ignoring'})
 
-        repo = git.Repo('/var/www/sites/mysite')
+        repo = git.Repo('/home/Darkxys/laboratory-backend')
         origin = repo.remotes.origin
 
         pull_info = origin.pull()
@@ -72,6 +72,3 @@ def webhook():
         build_commit = f'build_commit = "{commit_hash}"'
         print(f'{build_commit}')
         return 'Updated PythonAnywhere server to commit {commit}'.format(commit=commit_hash)
-    
-if __name__ == "__main__":
-    app.run()
