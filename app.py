@@ -13,7 +13,7 @@ def is_valid_signature(x_hub_signature, data, private_key):
     
 @app.route("/", methods=["GET"])
 def root():
-    return "Hello World! Test pull"
+    return "Hello World!!!!"
 
 @app.route('/update_server', methods=['POST'])
 def webhook():
