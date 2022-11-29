@@ -1,8 +1,19 @@
-import os
+import os, json, hmac, git, hashlib
 from flask import Flask, request, abort
 
 app = Flask(__name__)
 w_secret = os.environ['WEBHOOK_SECRET']
+
+def is_valid_signature(x_hub_signature, data, private_key):
+    hash_algorithm, github_signature = x_hub_signature.split('=', 1)
+    algorithm = hashlib.__dict__.get(hash_algorithm)
+    encoded_key = bytes(private_key, 'latin-1')
+    mac = hmac.new(encoded_key, msg=data, digestmod=algorithm)
+    return hmac.compare_digest(mac.hexdigest(), github_signature)
+    
+@app.route("/", methods=["GET"])
+def root():
+    return "Hello World!"
 
 @app.route('/update_server', methods=['POST'])
 def webhook():
@@ -61,3 +72,6 @@ def webhook():
         build_commit = f'build_commit = "{commit_hash}"'
         print(f'{build_commit}')
         return 'Updated PythonAnywhere server to commit {commit}'.format(commit=commit_hash)
+    
+if __name__ == "__main__":
+    app.run()
