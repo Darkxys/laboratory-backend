@@ -72,7 +72,7 @@ def webhook():
         if payload['ref'] != 'refs/heads/main':
             return json.dumps({'msg': 'Not master; ignoring'})
 
-        repo = git.Repo('/home/Darkxys/laboratory-backend')
+        repo = git.Repo('/home/Darkxys/laboratory-chess-backend')
         origin = repo.remotes.origin
 
         pull_info = origin.pull()
