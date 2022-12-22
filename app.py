@@ -27,7 +27,7 @@ def chess_ai():
     
 @app.route("/", methods=["GET"])
 def root():
-    return "Hello World!!_!! testing git pulls"
+    return "Hello World!_|_! testing git pulls"
 
 @app.route('/update_server', methods=['POST'])
 def webhook():
