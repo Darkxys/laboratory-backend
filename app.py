@@ -1,7 +1,16 @@
-import os, json, hmac, git, hashlib
+import os
+import json
+import hmac
+import git
+import hashlib
 from flask import Flask, request, abort
+from dotenv import load_dotenv
+from flask_cors import CORS
+
+load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
 w_secret = os.environ['WEBHOOK_SECRET']
 
 def is_valid_signature(x_hub_signature, data, private_key):
@@ -10,10 +19,15 @@ def is_valid_signature(x_hub_signature, data, private_key):
     encoded_key = bytes(private_key, 'latin-1')
     mac = hmac.new(encoded_key, msg=data, digestmod=algorithm)
     return hmac.compare_digest(mac.hexdigest(), github_signature)
+
+@app.route("/chess-ai", methods=["GET"])
+def chess_ai():
+    fen = request.args.get("fen")
+    return fen
     
 @app.route("/", methods=["GET"])
 def root():
-    return "Hello World!_!"
+    return "Hello World!_!!"
 
 @app.route('/update_server', methods=['POST'])
 def webhook():
@@ -72,3 +86,6 @@ def webhook():
         build_commit = f'build_commit = "{commit_hash}"'
         print(f'{build_commit}')
         return 'Updated PythonAnywhere server to commit {commit}'.format(commit=commit_hash)
+
+if __name__ == "__main__" and os.environ["FLASK_ENV"] == "development":
+    app.run()
